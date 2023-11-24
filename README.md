@@ -50,5 +50,5 @@ git commit -m "[BOJ] 평범한 배낭"
 # ✅ 참여자
 | 구유정 | 박서연 | 박윤혜 |
 | :---: | :---: | :---: |
-| <img src="https://github.com/cotepractice/CodingTest-Solution/assets/72440759/dce366c0-60f9-472c-83b4-44e52106f182" height=80 width=80></img> | <img src="https://github.com/cotepractice/CodingTest-Solution/assets/72440759/6f57d656-7d8a-4d42-bd14-1f24775b6f35" height=80 width=80></img> | <img src="https://github.com/cotepractice/CodingTest-Solution/assets/72440759/ebb9dba5-1ebb-4c23-b49d-a74253f62d84" height=80 width=80></img> |
+| <img src="https://avatars.githubusercontent.com/u/81794810?v=4" height=90 width=90></img> | <img src="https://avatars.githubusercontent.com/u/125520029?v=4" height=90 width=90></img> | <img src="https://avatars.githubusercontent.com/u/72440759?v=4" height=90 width=90></img> |
 | <a href="https://github.com/guyujung"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=FFFFFF&"/> | <a href="https://github.com/seoyeon0201"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=FFFFFF&"/> | <a href="https://github.com/yuunhye"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=FFFFFF&"/> | 
