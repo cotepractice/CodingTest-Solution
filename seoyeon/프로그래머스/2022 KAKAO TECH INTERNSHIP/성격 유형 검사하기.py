@@ -13,18 +13,17 @@ def solution(survey, choices):
     
     for choice in choices:
         if (choice<4):  
-            cnt[char_list.index(survey[idx][0])] += 1
+            cnt[char_list.index(survey[idx][0])] += 4-choice
         else:
-            cnt[char_list.index(survey[idx][1])] += 1
+            cnt[char_list.index(survey[idx][1])] += choice-4
         idx += 1
-        
+    print(cnt)
     for i in range(8):
-        #앞의 수는(index 0,2,..) 뒤의 숫자와 비교해 char_list 찾기
         if (i%2==0):
-            if (cnt[i] >= cnt[i+1]):
+            if (cnt[i]>=cnt[i+1]):
                 ans.append(char_list[i])
             else:
                 ans.append(char_list[i+1])
-
+        
     answer = "".join(ans)
     return answer
