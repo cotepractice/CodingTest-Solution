@@ -101,6 +101,7 @@ def solution(numbers):
     
     n = len(numbers)
 
+    #int형일 때의 sort와 str형일 떄의 sort가 다름
     str_numbers = []
     for i in range(n):
         number = str(numbers[i])
