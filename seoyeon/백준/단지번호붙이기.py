@@ -1,7 +1,6 @@
 #백준 #2667 단지번호붙이기 
 #그래프 알고리즘
-#14:16~15:21
-#14:50~15:24
+#01:40 소요
 
 import sys
 from collections import deque
