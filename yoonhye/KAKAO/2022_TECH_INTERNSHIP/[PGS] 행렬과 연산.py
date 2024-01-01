@@ -1,36 +1,37 @@
-def ShiftRow(rc, N):
-    new_rc = [0] * N
-    for i in range(N - 1):
-        new_rc[i + 1] = rc[i]
-    new_rc[0] = rc[-1]
-    return new_rc
-
+from collections import deque
 
 def Rotate(rc, N, M):
-    new_rc = [item[:] for item in rc]
-    for a in range(0, M - 1):  # 첫 행에서 끝 열에 있는 원소를 제외한 첫 행의 모든 원소는 오른쪽으로 한 칸 이동
-        new_rc[0][a + 1] = rc[0][a]
+    row = [rc[0][:], rc[-1][:]]  # 첫 행, 마지막 행
 
-    for b in range(0, N - 1):  # 끝 열에서 끝 행에 있는 원소를 제외한 끝 열의 모든 원소는 아래쪽으로 한 칸 이동
-        new_rc[b + 1][-1] = rc[b][-1]
+    column = [[], []]  # 첫 열, 마지막 열
+    for k in range(N):
+        column[0].append(rc[k][0])
+        column[1].append(rc[k][-1])
 
-    for c in range(1, M):  # 끝 행에서 첫 열에 있는 원소를 제외한 끝 행의 모든 원소는 왼쪽으로 한 칸 이동
-        new_rc[-1][c - 1] = rc[-1][c]
+    rc[0][1] = row[0][0]
+    rc[-1][M - 2] = row[1][M - 1]
+    for i in range(1, M - 1):
+        rc[0][i + 1] = row[0][i]
+        rc[-1][i - 1] = row[1][i]
 
-    for d in range(1, N):  # 첫 열에서 첫 행에 있는 원소를 제외한 첫 열의 모든 원소는 위쪽으로 한 칸 이동
-        new_rc[d - 1][0] = rc[d][0]
-
-    return new_rc
+    rc[1][-1] = row[0][-1]
+    rc[N - 2][0] = row[1][0]
+    for j in range(1, N - 1):
+        rc[j + 1][-1] = column[1][j]
+        rc[j - 1][0] = column[0][j]
+    return rc
 
 
 def solution(rc, operations):
     M = len(rc[0])  # 열의 개수
     N = len(rc)  # 행의 개수
-
+    start = 0
+    end = N - 1
+    rc = deque(rc)
     for op in operations:
         if op == "Rotate":
             rc = Rotate(rc, N, M)
         else:
-            rc = ShiftRow(rc, N)
+            rc.appendleft(rc.pop())
 
-    return rc
+    return list(rc)
