@@ -20,9 +20,6 @@ origin.sort()
 
 check = [0 for _ in range(m)]
 
-# print(origin)
-# print(compare)
-
 for compare_idx in range(m):
     if compare[compare_idx] in origin:
         check[compare_idx] = 1
