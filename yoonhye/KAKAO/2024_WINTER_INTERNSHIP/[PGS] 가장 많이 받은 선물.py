@@ -25,19 +25,17 @@ def solution(friends, gifts):
 
     for i in friends:
         for j in friends:
+
             if i == j:
                 continue
             if info[i][j] > 0:  # i가 선물을 더 많이 줬으므로 i가 선물 하나를 받는다.
                 result[i] += 1
-            elif info[i][j] < 0:  # j가 선물을 더 많이 줬으므로 j가 선물 하나를 받는다.
-                result[j] += 1
-            else:  # info[i][j] == 0 -> 선물지수 비교
-                if scores[i] < scores[j]:  # j의 선물 지수가 더 크기 때문에 b가 선물 하나를 받는다.
-                    result[j] += 1
-                elif scores[i] > scores[j]:
+
+            elif info[i][j] == 0:  # info[i][j] == 0 -> 선물지수 비교
+                if scores[i] > scores[j]:
                     result[i] += 1
     answer = 0
     for p in friends:
         answer = max(answer, result[p])
 
-    return answer//2    #중복되므로 2로 나눠줘야 함
+    return answer
