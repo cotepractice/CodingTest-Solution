@@ -47,3 +47,45 @@ def solution(people, limit):
                 
     return cnt
 
+#3. deque 사용. 정확성: 14.8, 효율성: 7.4, 합계: 22.2 / 100.0
+from collections import deque
+
+def solution(people, limit):
+    people.sort()
+    queue = deque(people)
+    #print("queue",queue)
+    n = len(people)
+    
+    cnt = 1     #총 보트의 무게
+    boat = 0    #하나의 보트에 포함된 무게
+    while True:
+        if (queue == deque([])):
+            break
+        w = queue.popleft()
+        if (w+boat <= limit):
+            boat = w+boat
+        else:
+            cnt += 1
+            boat = w
+                
+    return cnt
+
+#4. 정확성: 81.5, 효율성: 18.5, 합계: 100.0 / 100.0
+def solution(people, limit):
+    people.sort()
+    n = len(people)
+    
+    cnt = 0     #두명이 동시에 타는 보트의 무게
+    start = 0
+    end = n-1
+    while start<end:
+        #둘 다 태울 수 있는 경우
+        if (people[start]+people[end]<=limit):
+            start += 1
+            cnt += 1
+        #한사람만 태우는 경우
+        end -= 1
+
+    answer = n - cnt
+                
+    return answer
