@@ -7,12 +7,6 @@ def solution(N, number):
         n = str(N) * i
         dp[i].add(int(n))
         for j in range(1, i):
-            a = int(n[:j])
-            b = int(n[j:])
-            dp[i].add(a + b)
-            dp[i].add(a - b)
-            dp[i].add(a // b)
-            dp[i].add(a * b)
             for c in dp[j]:
                 for d in dp[i - j]:
                     dp[i].add(c + d)
