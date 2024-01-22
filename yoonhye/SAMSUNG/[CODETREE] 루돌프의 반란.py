@@ -24,7 +24,7 @@ def crash(Rr, Rc, dx, dy, n, S): #루돌프 좌표(=충돌한 산타 좌표), �
     global santa_number
 
     sx, sy = Rr, Rc
-    score[n] += S  # 그 산타는 C만큼의 점수 획득
+    score[n] += S  # 그 산타는 S만큼의 점수 획득
     board[sx][sy] = 0
     # 산타는 루돌프가 이동해온 방향으로 S칸 밀려남
     sx += (dx * S)
@@ -47,7 +47,7 @@ def crash(Rr, Rc, dx, dy, n, S): #루돌프 좌표(=충돌한 산타 좌표), �
                     santa_number -= 1
                     break
                 else:
-                    santa[p] = [distance(Rr, Rc, mx, my), mx, my, 1]
+                    santa[p][0], santa[p][1], santa[p][2] = distance(Rr, Rc, mx, my), mx, my
                     num = p
                     nx, ny = mx, my
         else:  # 그 자리에 산타 없음
