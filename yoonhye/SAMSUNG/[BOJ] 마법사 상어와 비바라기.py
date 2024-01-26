@@ -16,19 +16,19 @@ from collections import deque
 def cloud_move(d, s):   #구름 이동 함수
     global N
     new_cloud = []
-    dx, dy = dir[d]
+    dx, dy = dir[d][0]*s, dir[d][1]*s
     for x, y in cloud:
-        for _ in range(s):
-            x, y = x+dx, y+dy
-            if x == -1:
-               x = N-1
-            elif x == N:
-                x = 0
-            if y == -1:
-                y = N-1
-            elif y == N:
-                y = 0
-        new_cloud.append((x,y))
+        nx, ny = x+dx, y+dy
+        if nx<0:
+            nx += ((abs(nx+1)//N)+1) * N
+        elif nx>0:
+            nx %= N
+        if ny<0:
+            ny += ((abs(ny + 1) // N) + 1) * N
+        elif ny>0:
+            ny %= N
+        new_cloud.append((nx,ny))
+        visited[nx][ny] = 1
     return new_cloud
 
 def water_copy():
@@ -42,7 +42,6 @@ def water_copy():
             if board[nx][ny]:   #물이 있으면
                 board[x][y] += 1
 
-
 N, M = map(int, input().split())
 board = [list(map(int, input().split())) for _ in range(N)]
 move_info = deque()
@@ -51,21 +50,22 @@ for _ in range(M):
     d, s = map(int, input().split())
     move_info.append((d,s))
 cloud = [(N-1,0), (N-1,1), (N-2,0), (N-2,1)]
-
+visited = [[0 for _ in range(N)] for _ in range(N)]
 for _ in range(M):
     d, s = move_info.popleft()
     cloud = cloud_move(d,s)
     for x, y in cloud:
         board[x][y] += 1
-    del_cloud = dict().fromkeys(cloud,0)
     water_copy()
     cloud = []
 
     for i in range(N):
         for j in range(N):
-            if board[i][j] >= 2 and del_cloud.get((i,j)) == None:
+            if board[i][j] >= 2 and visited[i][j] == 0:
                 cloud.append((i,j))
                 board[i][j] -= 2
+            elif visited[i][j] == 1:
+                visited[i][j] = 0
 res = 0
 for i in range(N):
     res += sum(board[i])
