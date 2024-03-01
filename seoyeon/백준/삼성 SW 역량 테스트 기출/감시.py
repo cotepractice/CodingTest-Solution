@@ -33,7 +33,8 @@ def one(i,j):
     y = j+dy[maxIdx]
     n = 1
     while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
-        Rooms[x][y] = 7 #cctv 감시 구역
+        if Rooms[x][y] == 0:
+            Rooms[x][y] = 7 #cctv 감시 구역
         n += 1
         x = i+dx[maxIdx]*n
         y = j+dy[maxIdx]*n
@@ -74,6 +75,18 @@ def two(i,j):
             y += maxIdx[k][1]
     return Rooms
 
+def five(i,j):
+    directions = [(0,1),(1,0),(0,-1),(-1,0)]
+    for k in range(4):
+        x = i+directions[k][0]
+        y = j+directions[k][1]
+
+        while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
+            if Rooms[x][y]==0:
+                Rooms[x][y] = 7
+            x += directions[k][0]
+            y += directions[k][1]
+    return Rooms
 
 for i in range(N):
     for j in range(M):
@@ -85,8 +98,8 @@ for i in range(N):
         #     three(i,j)
         # elif Rooms[i][j] == 4:
         #     four(i,j)
-        # elif Rooms[i][j] == 5:
-        #     five(i,j)
+        elif Rooms[i][j] == 5:
+            five(i,j)
 
 print(*Rooms)
 cnt = 0
