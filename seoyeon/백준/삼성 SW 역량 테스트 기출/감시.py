@@ -47,6 +47,7 @@ def two(i,j):
     maxIdx = 0
     maxCnt = 0
     for direction in directions:
+        #print("dire",direction)
         for k in range(2):
             x = i+direction[k][0]
             y = j+direction[k][1]
@@ -62,14 +63,92 @@ def two(i,j):
         if cnt > maxCnt:
             maxCnt = cnt
             maxIdx = direction
+            #print("direction",direction,"maxIdx",maxIdx)
         cnt = 0
     
+    if maxIdx==0:
+        return Rooms
+
     for k in range(2):
         x = i+maxIdx[k][0]
         y = j+maxIdx[k][1]
 
         while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
             if Rooms[x][y]==0:
+                Rooms[x][y] = 7
+            x += maxIdx[k][0]
+            y += maxIdx[k][1]
+    return Rooms
+
+def three(i,j):
+    directions = [[(0,1),(-1,0)], [(0,-1),(-1,0)], [(0,-1),(1,0)], [(1,0),(0,1)]]
+
+    cnt = 0
+    maxCnt = 0
+    maxIdx = 0
+    for k in range(4):
+        direction = directions[k]
+        for l in range(2):
+            x = i+direction[l][0]
+            y = j+direction[l][1]
+
+            while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
+                if Rooms[x][y] == 0:
+                    cnt += 1
+                x += direction[l][0]
+                y += direction[l][1]
+        
+        if cnt>maxCnt:
+            maxCnt = cnt
+            maxIdx = direction
+        cnt = 0
+    
+    if maxIdx==0:
+        return Rooms
+    
+    for k in range(2):
+        x = i+maxIdx[k][0]
+        y = j+maxIdx[k][1]
+        while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
+            if Rooms[x][y] == 0:
+                Rooms[x][y] = 7
+            x += maxIdx[k][0]
+            y += maxIdx[k][1]
+    return Rooms
+
+def four(i,j):
+    directions = [[(0,1),(-1,0),(0,-1)], [(-1,0),(0,-1),(1,0)], [(0,-1),(1,0),(0,1)], [(1,0),(0,1),(-1,0)]]
+    
+    maxCnt = 0
+    maxIdx = 0
+    for k in range(4):
+        direction = directions[k]
+        cnt = 0
+        for l in range(3):
+            x = i + direction[l][0]
+            y = j + direction[l][1]
+
+            while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
+                #print("here",x,y)
+                if Rooms[x][y] == 0:
+                    cnt += 1
+                x += direction[l][0]
+                y += direction[l][1]
+        #print("cnt",cnt,k,l)
+        if cnt>maxCnt:
+            maxCnt = cnt
+            maxIdx = direction
+        #print("k",k,"cnt",cnt,"direction",direction)
+    #print(maxIdx,maxCnt)
+
+    if maxIdx==0:
+        return Rooms
+    
+    for k in range(3):
+        x = i+maxIdx[k][0]
+        y = j+maxIdx[k][1]
+        while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
+            if Rooms[x][y] == 0:
                 Rooms[x][y] = 7
             x += maxIdx[k][0]
             y += maxIdx[k][1]
@@ -94,14 +173,14 @@ for i in range(N):
             one(i,j)
         elif Rooms[i][j] == 2:
             two(i,j)
-        # elif Rooms[i][j] == 3:
-        #     three(i,j)
-        # elif Rooms[i][j] == 4:
-        #     four(i,j)
+        elif Rooms[i][j] == 3:
+            three(i,j)
+        elif Rooms[i][j] == 4:
+            four(i,j)
         elif Rooms[i][j] == 5:
             five(i,j)
 
-print(*Rooms)
+#print(*Rooms)
 cnt = 0
 for i in range(N):
     for j in range(M):
