@@ -1,5 +1,6 @@
 #백준 #15683 감시
 #삼성 SW 역량 테스트 기출
+import copy
 
 N,M = map(int, input().split())
 Rooms = [[0 for _ in range(M)] for _ in range(N)]
@@ -7,184 +8,73 @@ Rooms = [[0 for _ in range(M)] for _ in range(N)]
 for i in range(N):
     Rooms[i] = list(map(int, input().split()))
 
-def one(i,j):
-    dx = [0,-1,0,1]
-    dy = [1,0,-1,0]
+# CCTV 종류별, 바라보는 방향별 감시영역 재귀적 탐색
+def dfs(graph, depth):
+    global answer
+    # 종료 조건: 모든 CCTV 탐색
+    if depth == len(cctv_list):
+        # 사각지대 최솟값
+        answer = min(answer, count_zero(graph))
+        return
+    else:
+        # 사무실 정보 깊은 복사
+        graph_copy = copy.deepcopy(graph)
+        x, y, cctv_type = cctv_list[depth]
+        for cctv_dir in cctv_direction[cctv_type]:
+            # CCTV 감시영역 구하는 함수 호출
+            watch(x, y, cctv_dir, graph_copy)
+            # 현재 Case에서 타 모든 CCTV 재귀적 탐색
+            dfs(graph_copy, depth + 1)
+            # CCTV를 다른 방향으로 회전시킨 후 재탐색하기 위함. graph_copy를 원래의 graph로 변경
+            graph_copy = copy.deepcopy(graph)
 
-    maxIdx = 0
-    maxCnt = 0
-    for k in range(4):
-        cnt = 0
-        n = 1
-        x = i+dx[k]
-        y = j+dy[k]
-        while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
-            if Rooms[x][y]==0:  #빈 칸만 카운트. CCTV이거나 이미 감시한 곳은 카운트 X
+# CCTV 감시영역 구하는 함수
+def watch(x, y, direction, graph):
+    for d in direction:
+        nx, ny = x, y
+        # 특정 방향으로 벽을 만나거나 사무실을 벗어나기 전까지 탐색
+        while True:
+            nx += direction_list[d][0]
+            ny += direction_list[d][1]
+            # 맵 내 위치
+            if 0 <= nx < N and 0 <= ny < M:
+                # 벽을 만난 경우
+                if graph[nx][ny] == 6:
+                    break
+                # 새로운 감시가능 영역일 경우
+                elif graph[nx][ny] == 0:
+                    graph[nx][ny] = '#'
+            # 맵 외 위치
+            else:
+                break
+
+# 사각지대 개수 구하는 함수
+def count_zero(graph):
+    cnt = 0
+    for i in range(N):
+        for j in range(M):
+            if graph[i][j] == 0:
                 cnt += 1
-            n += 1
-            x = i+dx[k]*n
-            y = j+dy[k]*n
+    return cnt
 
-        if cnt > maxCnt:
-            maxCnt = cnt
-            maxIdx = k
-    
-    x = i+dx[maxIdx]
-    y = j+dy[maxIdx]
-    n = 1
-    while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
-        if Rooms[x][y] == 0:
-            Rooms[x][y] = 7 #cctv 감시 구역
-        n += 1
-        x = i+dx[maxIdx]*n
-        y = j+dy[maxIdx]*n
-    return Rooms
-
-def two(i,j):
-    directions = [[(0,-1),(0,1)],[(-1,0),(1,0)]]
-    cnt = 0
-
-    maxIdx = 0
-    maxCnt = 0
-    for direction in directions:
-        #print("dire",direction)
-        for k in range(2):
-            x = i+direction[k][0]
-            y = j+direction[k][1]
-            n = 1
-            
-            while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
-                if Rooms[x][y]==0:
-                    cnt+=1
-                n += 1
-                x = i+direction[k][0]*n
-                y = j+direction[k][1]*n
-
-        if cnt > maxCnt:
-            maxCnt = cnt
-            maxIdx = direction
-            #print("direction",direction,"maxIdx",maxIdx)
-        cnt = 0
-    
-    if maxIdx==0:
-        return Rooms
-
-    for k in range(2):
-        x = i+maxIdx[k][0]
-        y = j+maxIdx[k][1]
-
-        while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
-            if Rooms[x][y]==0:
-                Rooms[x][y] = 7
-            x += maxIdx[k][0]
-            y += maxIdx[k][1]
-    return Rooms
-
-def three(i,j):
-    directions = [[(0,1),(-1,0)], [(0,-1),(-1,0)], [(0,-1),(1,0)], [(1,0),(0,1)]]
-
-    cnt = 0
-    maxCnt = 0
-    maxIdx = 0
-    for k in range(4):
-        direction = directions[k]
-        for l in range(2):
-            x = i+direction[l][0]
-            y = j+direction[l][1]
-
-            while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
-                if Rooms[x][y] == 0:
-                    cnt += 1
-                x += direction[l][0]
-                y += direction[l][1]
-        
-        if cnt>maxCnt:
-            maxCnt = cnt
-            maxIdx = direction
-        cnt = 0
-    
-    if maxIdx==0:
-        return Rooms
-    
-    for k in range(2):
-        x = i+maxIdx[k][0]
-        y = j+maxIdx[k][1]
-        while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
-            if Rooms[x][y] == 0:
-                Rooms[x][y] = 7
-            x += maxIdx[k][0]
-            y += maxIdx[k][1]
-    return Rooms
-
-def four(i,j):
-    directions = [[(0,1),(-1,0),(0,-1)], [(-1,0),(0,-1),(1,0)], [(0,-1),(1,0),(0,1)], [(1,0),(0,1),(-1,0)]]
-    
-    maxCnt = 0
-    maxIdx = 0
-    for k in range(4):
-        direction = directions[k]
-        cnt = 0
-        for l in range(3):
-            x = i + direction[l][0]
-            y = j + direction[l][1]
-
-            while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
-                #print("here",x,y)
-                if Rooms[x][y] == 0:
-                    cnt += 1
-                x += direction[l][0]
-                y += direction[l][1]
-        #print("cnt",cnt,k,l)
-        if cnt>maxCnt:
-            maxCnt = cnt
-            maxIdx = direction
-        #print("k",k,"cnt",cnt,"direction",direction)
-    #print(maxIdx,maxCnt)
-
-    if maxIdx==0:
-        return Rooms
-    
-    for k in range(3):
-        x = i+maxIdx[k][0]
-        y = j+maxIdx[k][1]
-        while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
-            if Rooms[x][y] == 0:
-                Rooms[x][y] = 7
-            x += maxIdx[k][0]
-            y += maxIdx[k][1]
-    return Rooms
-
-def five(i,j):
-    directions = [(0,1),(1,0),(0,-1),(-1,0)]
-    for k in range(4):
-        x = i+directions[k][0]
-        y = j+directions[k][1]
-
-        while 0<=x<N and 0<=y<M and Rooms[x][y]!=6:
-            if Rooms[x][y]==0:
-                Rooms[x][y] = 7
-            x += directions[k][0]
-            y += directions[k][1]
-    return Rooms
-
+# 최솟값을 구하기 위해 초기값 10억 세팅
+answer = int(1e9)
+cctv_list = []  #cctv 좌표&종류 (x,y,종류)
 for i in range(N):
     for j in range(M):
-        if Rooms[i][j] == 1:
-            one(i,j)
-        elif Rooms[i][j] == 2:
-            two(i,j)
-        elif Rooms[i][j] == 3:
-            three(i,j)
-        elif Rooms[i][j] == 4:
-            four(i,j)
-        elif Rooms[i][j] == 5:
-            five(i,j)
-
-#print(*Rooms)
-cnt = 0
-for i in range(N):
-    for j in range(M):
-        if Rooms[i][j] == 0:
-            cnt += 1
-
-print(cnt)
+        if 1 <= Rooms[i][j] <= 5:
+            # CCTV 좌표 및 종류 저장
+            cctv_list.append((i, j, Rooms[i][j]))
+# 탐색 방향: 상, 하, 좌, 우
+direction_list = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+# CCTV별 이동 가능한 방향
+cctv_direction = [
+        [],
+        [[0], [1], [2], [3]], # 1번 CCTV
+        [[0, 1], [2, 3]], # 2번 CCTV
+        [[0, 2], [0, 3], [1, 2], [1, 3]], # 3번 CCTV
+        [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]], # 4번 CCTV
+        [[0, 1, 2, 3]] # 5번 CCTV
+]
+dfs(Rooms, 0)
+print(answer)
