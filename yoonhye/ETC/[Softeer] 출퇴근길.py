@@ -1,38 +1,39 @@
-def find_route(x, arr, endpoint, route, visited):  # 집에서 회사 (S -> T)
-
-    if x == endpoint:
-        for i in arr:
-            route.add(i)
-        return
-    for v in graph[x]:
-        if v in route:  # x에서 v로 가는 경로가 존재하는데, v가 S->T로 갈 수 있는 경로에 이미 포함되어 있다면, 더 확인할 필요 없이 x도 그 경로에 포함시켜준다.
-            route.add(x)
-            visited[(x, v)] = 1
+def DFS(start, visit, adj):
+    stack = [start]
+    while stack:
+        now = stack.pop()
+        if visit[now] == 1:
             continue
-        if visited.get((x, v)) == None:
-            visited[(x, v)] = 1
-            arr.append(v)
-            find_route(v, arr, endpoint, route, visited)
-            arr.pop()
-
+        visit[now] = 1
+        for neighbor in adj[now]:
+            stack.append(neighbor)
 
 n, m = map(int, input().split())
-graph = [[] for _ in range(n + 1)]
-
+adj = [[] for _ in range(n + 1)]
+adjR = [[] for _ in range(n + 1)]
 for _ in range(m):
     a, b = map(int, input().split())
-    graph[a].append(b)
+    adj[a].append(b)
+    adjR[b].append(a)
+S, T = map(int, input().split())
 
-S, T = map(int, input().split())  # 집, 회사
-visited_go = dict()
-visited_back = dict()
-go_route = set()  # 출근길에 들른 동네 정보
-back_route = set()  # 퇴근길에 들른 동네 정보
+fromS = [0] * (n + 1)
+fromS[T] = 1
+DFS(S, fromS, adj)
 
-find_route(S, [S], T, go_route, visited_go)
-find_route(T, [T], S, back_route, visited_back)
+fromT = [0] * (n + 1)
+fromT[S] = 1
+DFS(T, fromT, adj)
 
-intersection = go_route & back_route
-print(len(intersection) - 2)
+toS = [0] * (n + 1)
+DFS(T, toS, adjR)
 
+toT = [0] * (n + 1)
+DFS(S, toT, adjR)
 
+count = 0
+for i in range(1, n + 1):
+    if fromS[i] and fromT[i] and toS[i] and toT[i]:
+        count += 1
+
+print(count - 2)
