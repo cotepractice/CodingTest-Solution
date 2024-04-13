@@ -12,7 +12,7 @@ for i in range(N):
 
 #공격자 선정
 def getAttacker(graph):
-    answers = (0,0,0)
+    answers = (0,0)
     low = 5001
     #1.공격력이 가장 낮은 포탑 선택
     for i in range(N):
@@ -22,28 +22,26 @@ def getAttacker(graph):
             #기준1
             if graph[i][j] < low:
                 low = graph[i][j]
-                answers = (i,j,low)
                 low_x,low_y = i,j
             elif graph[i][j] == low:
                 #기준2
                 if history[i][j] > history[low_x][low_y]:   #수가 큰 것이 최근
-                    answers = (i,j,low)
                     low_x,low_y = i,j
                 elif history[i][j] == history[low_x][low_y]:
                     #기준3
                     if i+j > low_x+low_y:
-                        answers = (i,j,low)
                         low_x,low_y = i,j
                     elif i+j == low_x+low_y:
                         #기준4
                         if j > low_y:
-                            answers = (i,j,low)
+                            low_x,low_y = i,j
+    answers = (low_x,low_y)
     return answers
 
 #공격자 공격1: 가장 강한 포탑 선택
 def getTarget(graph,x,y):
-    answers = (0,0,0)
-    high = 0
+    answers = (0,0)
+    high = -1
 
     for i in range(N):
         for j in range(M):
@@ -56,24 +54,20 @@ def getTarget(graph,x,y):
             #기준1
             if graph[i][j] > high:
                 high = graph[i][j]
-                answers = (i,j,high)
                 high_x,high_y = i,j
             elif graph[i][j] == high:
                 #기준2
                 if history[i][j] < history[high_x][high_y]:
-                    answers = (i,j,high)
                     high_x,high_y = i,j
                 elif history[i][j] == history[high_x][high_y]:
                     #기준3
                     if i+j < high_x+high_y:
-                        answers = (i,j,high)
                         high_x,high_y = i,j
                     elif i+j == high_x+high_y:
                         #기준4
                         if y < high_y:
-                            answers = (i,j,high)
                             high_x,high_y = i,j
-    
+    answers = (high_x,high_y)
     return answers
 
 #레이저 공격
@@ -158,7 +152,7 @@ history = [[0 for _ in range(M)] for _ in range(N)]   #공격 포탑에 현재 �
 #Main
 
 for k in range(K):  #k는 history 기록을 위한 변수
-    x,y,val = getAttacker(graph)
+    x,y = getAttacker(graph)
     #print(graph)
     graph[x][y] += N+M
     target_x,target_y,val = getTarget(graph,x,y)
