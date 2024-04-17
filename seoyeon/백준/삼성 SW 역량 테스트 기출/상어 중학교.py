@@ -22,13 +22,13 @@
 #5. 격자에 중력
 
 from collections import deque
+import copy
 
 #1. 크기가 가장 큰 블록 그룹 찾기.
 # -1은 들어가면 안 되고 0은 가능. 일반 블록은 동일한 값이어야함
 # 일반 블록 하나는 반드시 존재
 def findBlock(graph,x,y):
-    #print("findblock visited",visited)
-    numberLst = []
+    numberLst = deque()
     Q = deque()
     color = graph[x][y]
     zero = deque()   #graph[nx][ny]==0인경우 마지막에 visited=False로 변경
@@ -38,19 +38,19 @@ def findBlock(graph,x,y):
 
     Q.append((x,y))
     visited[x][y] = True    #이때 visited는 외부(main)의 visited를 가져옴
-    #print("X,Y",x,y)
+    
     while Q:
-        #print("visited",visited)
+        
         i,j = Q.popleft()
         cnt += 1
         numberLst.append((i,j))
-        #print("i,j",i,j)
+
         for k in range(4):
             nx = i+dx[k]
             ny = j+dy[k]
             
             if 0<=nx<N and 0<=ny<N:
-                #print("nx,ny",nx,ny,graph[nx][ny])
+                
                 #조건1. -1은 반드시 제거
                 #조건2. 0은 반드시 포함
                 #조건3. 1<=graph[nx][ny]<=M인데 color와 같지 않으면 반드시 제거 
@@ -70,33 +70,62 @@ def findBlock(graph,x,y):
                         continue
                     visited[nx][ny] = True
                     Q.append((nx,ny))
-                # if 1<=vistied[nx][ny]<=M and visited[nx][ny] == True:
-                #     print("1")
-                #     continue
-                # if graph[nx][ny] == -1:
-                #     print("-1")
-                #     continue
-                # elif graph[nx][ny] == 0:
-                #     visited[nx][ny] = True
-                #     print("0")
-                #     #pass
-                # elif graph[nx][ny] != color:
-                #     print("not color")
-                #     continue
-                # elif graph[nx][ny] == color:
-                #     print("color")
-                #     visited[nx][ny] = True  #graph[nx][ny]==0인 경우 visited 항상 False. 확실해지면 마지막에 제거
-                # Q.append((nx,ny))
-                #cnt += 1
 
     for k in range(len(zero)):
         i,j = zero.popleft()
         visited[i][j] = False
 
-    print("FIND",x,y, cnt, numberLst)
-    #print("LAST visited",visited)
+    #print("FIND",x,y, cnt, numberLst)
     return cnt, numberLst
 
+#중력
+#검은색 블록(-1)을 제외한 모든 블록이 행의 번호가 큰 칸으로 이동
+def gravity(graph):
+    graph_copy = copy.deepcopy(graph)
+
+    #행은 큰 곳(뒤에서)부터
+    for i in range(N-2,-1,-1):   
+        for j in range(N):
+            minus = False
+            #print("i,j",i,j)
+            down = i
+            if graph[i][j] == -1 or graph[i][j] == -2:
+                continue
+            
+            if 0<=graph[i][j]<=M:
+                for k in range(i+1,N):
+                    # if minus == True:
+                    #     print("1")
+                    #     continue
+                    
+                    if graph_copy[k][j] != -2:
+                        down = k-1
+                        break
+                    down = k
+                #print(i,j,graph[i][j],"down",down)
+            
+            tmp = graph[i][j]
+            #기존의 위치는 -2, 이동한 위치는 기존 위치의 값
+            if down != i:
+                graph_copy[down][j], graph_copy[i][j] = tmp, -2
+            
+    #print("gravity graph:",graph_copy)
+    return graph_copy
+
+
+#반시계방향으로 90도 회전
+def rotate(graph):
+    graph_copy = copy.deepcopy(graph)
+    for i in range(N):
+        for j in range(N):
+            nx = (N-1)-j
+            ny = i
+            #print("i,j",i,j,"nx,ny",nx,ny,"value",graph[i][j])
+            graph_copy[nx][ny] = graph[i][j]
+
+    #print(graph)
+    #print(graph_copy)
+    return graph_copy
 
 #입력
 N, M = map(int,input().split()) #N:NxN 격자, M: 블록은 M 이하의 자연수 색
@@ -105,14 +134,15 @@ graph = [[0 for _ in range(N)] for _ in range(N)]
 
 
 #Main
+score = 0   #점수
 visited = [[False for _ in range(N)] for _ in range(N)]
 maxN = 0
-maxNLst = []
+maxNLst = deque()
 
 for i in range(N):
     graph[i] = list(map(int,input().split()))
 
-
+#1. 크기가 가장 큰 블록 찾기
 for x in range(N):
     for y in range(N):
         if visited[x][y] == False and 1<=graph[x][y]<=M:
@@ -135,5 +165,27 @@ for x in range(N):
                         maxN = number
                         maxNLst= numberLst
 
-print("maxN",maxN)
-print("maxNLst",maxNLst)
+# print("maxN",maxN)
+# print("maxNLst",maxNLst)
+
+#2. 블록 제거 및 점수 획득
+for k in range(len(maxNLst)):
+    x,y = maxNLst.popleft()
+    graph[x][y] = -2
+    visited[x][y] = False
+
+score += maxN**2
+#print("graph",graph)
+
+#3. 중력 작용
+graph = gravity(graph)
+#print("graph after gravity",graph)
+
+#4. 90도 반시계 방향으로 회전
+graph = rotate(graph)
+#print("After rotate: ",graph)
+#5. 중력 작용
+graph = gravity(graph)
+print("graph",graph)
+#6. 점수 합
+print(score)
