@@ -132,60 +132,63 @@ N, M = map(int,input().split()) #N:NxN 격자, M: 블록은 M 이하의 자연�
 
 graph = [[0 for _ in range(N)] for _ in range(N)]
 
-
-#Main
-score = 0   #점수
-visited = [[False for _ in range(N)] for _ in range(N)]
-maxN = 0
-maxNLst = deque()
-
 for i in range(N):
-    graph[i] = list(map(int,input().split()))
+        graph[i] = list(map(int,input().split()))
+score = 0   #점수
+#Main
+while True:
+    
+    visited = [[False for _ in range(N)] for _ in range(N)]
+    maxN = 0
+    maxNLst = deque()
 
-#1. 크기가 가장 큰 블록 찾기
-for x in range(N):
-    for y in range(N):
-        if visited[x][y] == False and 1<=graph[x][y]<=M:
-            #1-1. 해당 좌표에서의 dfs 실행
-            #print("1 visited",visited)
-            number,numberLst = findBlock(graph,x,y) #numberLst[0]은 자기자신
-            #print("2 visited",visited)
-            #1-2. 해당 크기가 max 크기보다 크면 업데이트
-            if number > maxN:
-                maxN = number
-                maxNLst= numberLst
-            elif number == maxN:
-                #행이 가장 큰 것
-                if x > maxNLst[0][0]:
+    #1. 크기가 가장 큰 블록 찾기
+    for x in range(N):
+        for y in range(N):
+            if visited[x][y] == False and 0<=graph[x][y]<=M:
+                #1-1. 해당 좌표에서의 dfs 실행
+                #print("1 visited",visited)
+                number,numberLst = findBlock(graph,x,y) #numberLst[0]은 자기자신
+                #print("2 visited",visited)
+
+                #1-2. 해당 크기가 max 크기보다 크면 업데이트
+                if number > maxN:
                     maxN = number
                     maxNLst= numberLst
-                elif x == maxNLst[0][0]:
-                    #열이 가장 큰 것
-                    if y > maxNLst[0][1]:
+                elif number == maxN:
+                    #행이 가장 큰 것
+                    if x > maxNLst[0][0]:
                         maxN = number
                         maxNLst= numberLst
+                    elif x == maxNLst[0][0]:
+                        #열이 가장 큰 것
+                        if y > maxNLst[0][1]:
+                            maxN = number
+                            maxNLst= numberLst
 
-# print("maxN",maxN)
-# print("maxNLst",maxNLst)
+    # print("maxN",maxN)
+    # print("maxNLst",maxNLst)
 
-#2. 블록 제거 및 점수 획득
-for k in range(len(maxNLst)):
-    x,y = maxNLst.popleft()
-    graph[x][y] = -2
-    visited[x][y] = False
+    if maxN < 2:
+        break
+    #2. 블록 제거 및 점수 획득
+    for k in range(len(maxNLst)):
+        x,y = maxNLst.popleft()
+        graph[x][y] = -2
+        visited[x][y] = False
 
-score += maxN**2
-#print("graph",graph)
+    score += maxN**2
+    #print("graph",graph)
 
-#3. 중력 작용
-graph = gravity(graph)
-#print("graph after gravity",graph)
+    #3. 중력 작용
+    graph = gravity(graph)
+    #print("graph after gravity",graph)
 
-#4. 90도 반시계 방향으로 회전
-graph = rotate(graph)
-#print("After rotate: ",graph)
-#5. 중력 작용
-graph = gravity(graph)
-print("graph",graph)
+    #4. 90도 반시계 방향으로 회전
+    graph = rotate(graph)
+    #print("After rotate: ",graph)
+    #5. 중력 작용
+    graph = gravity(graph)
+    print("graph",graph)
 #6. 점수 합
 print(score)
