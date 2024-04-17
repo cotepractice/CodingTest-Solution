@@ -77,7 +77,7 @@ def findBlock(graph,x,y):
         i,j = zero.popleft()
         visited[i][j] = False
 
-    #print("FIND",x,y, cnt, numberLst)
+    #print("FIND",x,y, numberLst)
     return cnt, rainbowCnt, numberLst
 
 #중력
@@ -149,7 +149,8 @@ while True:
     #1. 크기가 가장 큰 블록 찾기
     for x in range(N):
         for y in range(N):
-            if visited[x][y] == False and 0<=graph[x][y]<=M:
+            #graph[x][y]가 1부터 M까지인 경우만 실행
+            if visited[x][y] == False and 1<=graph[x][y]<=M:
                 #1-1. 해당 좌표에서의 dfs 실행
                 #print("1 visited",visited)
                 blockInfo = findBlock(graph,x,y) #numberLst[0]은 자기자신
