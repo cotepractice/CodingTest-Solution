@@ -33,6 +33,7 @@ def findBlock(graph,x,y):
     color = graph[x][y]
     zero = deque()   #graph[nx][ny]==0인경우 마지막에 visited=False로 변경
     cnt = 0 #블록 총 크기
+    rainbowCnt = 0  #rainbow 블록 개수
     dx = [0,0,-1,1]
     dy = [-1,1,0,0]
 
@@ -61,6 +62,7 @@ def findBlock(graph,x,y):
                     continue
                 elif graph[nx][ny] == 0:
                     visited[nx][ny] = True
+                    rainbowCnt += 1
                     Q.append((nx,ny))
                     zero.append((nx,ny))
                 elif 1<=graph[nx][ny]<=M:
@@ -76,7 +78,7 @@ def findBlock(graph,x,y):
         visited[i][j] = False
 
     #print("FIND",x,y, cnt, numberLst)
-    return cnt, numberLst
+    return cnt, rainbowCnt, numberLst
 
 #중력
 #검은색 블록(-1)을 제외한 모든 블록이 행의 번호가 큰 칸으로 이동
@@ -135,11 +137,13 @@ graph = [[0 for _ in range(N)] for _ in range(N)]
 for i in range(N):
         graph[i] = list(map(int,input().split()))
 score = 0   #점수
+
 #Main
 while True:
     
     visited = [[False for _ in range(N)] for _ in range(N)]
     maxN = 0
+    maxRainbowN = 0
     maxNLst = deque()
 
     #1. 크기가 가장 큰 블록 찾기
@@ -148,26 +152,35 @@ while True:
             if visited[x][y] == False and 0<=graph[x][y]<=M:
                 #1-1. 해당 좌표에서의 dfs 실행
                 #print("1 visited",visited)
-                number,numberLst = findBlock(graph,x,y) #numberLst[0]은 자기자신
+                blockInfo = findBlock(graph,x,y) #numberLst[0]은 자기자신
                 #print("2 visited",visited)
 
                 #1-2. 해당 크기가 max 크기보다 크면 업데이트
-                if number > maxN:
-                    maxN = number
-                    maxNLst= numberLst
-                elif number == maxN:
-                    #행이 가장 큰 것
-                    if x > maxNLst[0][0]:
-                        maxN = number
-                        maxNLst= numberLst
-                    elif x == maxNLst[0][0]:
-                        #열이 가장 큰 것
-                        if y > maxNLst[0][1]:
-                            maxN = number
-                            maxNLst= numberLst
+                if blockInfo[0] > maxN:
+                    maxN = blockInfo[0]
+                    maxRainbowN = blockInfo[1]
+                    maxNLst= blockInfo[2]
+                elif blockInfo[0] == maxN:
+                    #rainbow 블럭이 가장 많은 것
+                    if blockInfo[1] > maxRainbowN:
+                        maxN = blockInfo[0]
+                        maxRainbowN = blockInfo[1]
+                        maxNLst= blockInfo[2]   
+                    elif blockInfo[1] == maxRainbowN:
+                        #행이 가장 큰 것
+                        if x > maxNLst[0][0]:
+                            maxN = blockInfo[0]
+                            maxRainbowN = blockInfo[1]
+                            maxNLst= blockInfo[2] 
+                        elif x == maxNLst[0][0]:
+                            #열이 가장 큰 것
+                            if y > maxNLst[0][1]:
+                                maxN = blockInfo[0]
+                                maxRainbowN = blockInfo[1]
+                                maxNLst= blockInfo[2] 
 
     # print("maxN",maxN)
-    # print("maxNLst",maxNLst)
+    #print("maxNLst",maxNLst)
 
     if maxN < 2:
         break
@@ -189,6 +202,6 @@ while True:
     #print("After rotate: ",graph)
     #5. 중력 작용
     graph = gravity(graph)
-    print("graph",graph)
+    #print("graph",graph)
 #6. 점수 합
 print(score)
