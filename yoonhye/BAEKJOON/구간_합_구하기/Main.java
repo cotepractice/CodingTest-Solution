@@ -9,79 +9,62 @@ public class Main {
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
-        long[] num = new long[N+1];
-        for(int i = 1; i<N+1; i++){
+        int k = (int) Math.ceil(Math.log(N)/Math.log(2));
+
+        //초기화
+        int L = (int) Math.pow(2,(k+1));
+        long[] num = new long[L];
+        int index = (int) Math.pow(2, k);
+        for (int i = 1; i<=N; i++){
             st = new StringTokenizer(br.readLine());
-            num[i] = Long.parseLong(st.nextToken());
+            num[index] = Long.parseLong(st.nextToken());
+            index += 1;
         }
 
-        //1~999, 1000~1999, ... key값 : 1000으로 나눴을 때의 몫
-        HashMap<Integer, Long> dp = new HashMap<>();
-        int n = N/1000;
-        for (int i = 0; i<=n; i++){
-            int key = i;
-            dp.put(key, (long)0);
-            int start = key*1000;
-            int end = key*1000+999;
-            if (N<end){
-                end = N;
-            }
-            for (int j=start; j<=end; j++){
-                long value = dp.get(key);
-                value += num[j];
-                dp.put(key, value);
-            }
+        for (int i = L-1; i>0; i--){
+            int p = i/2;
+            num[p] += num[i];
         }
 
-        ArrayList<Long> res = new ArrayList<>();
-        for (int i=1; i<=(M+K); i++){
+        for (int i = 1; i<=(M+K); i++){
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-            long c = Long.parseLong(st.nextToken());
-
-            //수를 바꿈
-            if (a == 1){
-                long original_value = num[b];
-                int k = b/1000;
-                long v = dp.get(k);
-                v = v-original_value + c;
-                dp.put(k, v);
+            //데이터 업데이트
+            if (a==1){
+                long c = Long.parseLong(st.nextToken());
+                b = (int) Math.pow(2,k) + b - 1;
+                long dif = c-num[b];
                 num[b] = c;
-
-            } else { //합 구하기
-                int k1 = b / 1000;
-                int k2 = (int) c / 1000;
-                if (k1 != k2) {
-                    long sum1 = dp.get(k1);
-                    long sum2 = 0;
-                    long sum3 = dp.get(k2);
-                    for (int j = k1 * 1000; j < b; j++) {
-                        sum1 -= num[j];
-                    }
-                    for (int j = (k1+1); j<k2; j++){
-                        sum2 += dp.get(j);
-                    }
-
-                    int end = k2 * 1000 + 999;
-                    if (end > N){
-                        end = N;
-                    }
-                    for (int j = (int) c + 1; j <= end; j++) {
-                        sum3 -= num[j];
-                    }
-                    res.add(sum1 + sum2 + sum3);
-                } else {
-                    long sum = 0;
-                    for (int j = b; j <= c; j++) {
-                        sum += num[j];
-                    }
-                    res.add(sum);
+                b = b/2;
+                while(b>0){
+                    num[b] += dif;
+                    b = b/2;
                 }
             }
-        }
-        for (int i = 0; i<K; i++){
-            System.out.println(res.get(i));
+            //구간합 구하기
+            else{
+                int c = Integer.parseInt(st.nextToken());
+                //위치값 트리구조에 맞게 변경
+                b = (int) Math.pow(2,k) + b - 1;
+                c = (int) Math.pow(2,k) + c - 1;
+                ArrayList<Integer> selected_node = new ArrayList<>();
+                while(b<=c){
+                    if (b%2 == 1) {
+                        selected_node.add(b);
+                    }
+                    if (c%2 == 0){
+                        selected_node.add(c);
+                    }
+                    b = (b+1)/2;
+                    c = (c-1)/2;
+                }
+                long sum = 0;
+                for (Integer n : selected_node){
+                    sum += num[n];
+                }
+                System.out.println(sum);
+            }
         }
     }
 }
