@@ -21,6 +21,7 @@ def backTracking(depth, idx):
                 elif not visit[i] and not visit[j]:
                     link += graph[i][j]
         result = min(result, abs(start-link))
+        return
 
     for i in range(idx, N):
         if not visit[i]:
