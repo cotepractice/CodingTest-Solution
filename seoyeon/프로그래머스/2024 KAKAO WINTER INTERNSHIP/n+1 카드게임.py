@@ -223,6 +223,8 @@ global N,plus
 
 #3. 정확도 100. 직접 해결
 #그리디 알고리즘
+
+#이분탐색
 def solution(coin, cards):
 
     N = len(cards)
@@ -252,31 +254,24 @@ def solution(coin, cards):
     coin += use[0]  #0~N//3인덱스까지는 코인을 쓰지 않고 낼 수 있으므로
     
     for k in range(N//3,N,2):
+        #check[k]
         if check[k]==1:
             use[0] += 1
-
         elif check[k]==2:
             use[1] += 1
 
-            
+        #check[k+1]
         if check[k+1]==1:
             use[0] += 1
-
         elif check[k+1]==2:
             use[1] += 1
-
         
-        #낼 수 있는 카드쌍이 없는 경우
-        if use == [0,0]:
-            result = k
-            break
-        
-        #1 coin 낼 수 있는 카드쌍이 제출. 1 coin 낼 수 있으면 1 먼저 냄
+        #1 coin 낼 수 있는 카드쌍이 제출. 1 coin 낼 수 있으면 1 먼저 제출
         if use[0]>0 and coin>=1:
             use[0] -= 1
             coin -= 1
         else:
-            #2 coin 내기
+            #2 coin 제출
             if use[1]>0 and coin>=2:
                 use[1] -= 1
                 coin -= 2
@@ -284,15 +279,12 @@ def solution(coin, cards):
             else:
                 result = k
                 break
-        if coin < 0:
-            result = k
-            break
 
         result = k
         
         #낼 카드가 더 있으면 한 라운드 후에 종료. result를 index로 설정했기에 2 증가해야 1 라운드 증가 
         if k==N-2 and use!=[0,0]:   
             result += 2
-        
+    #result는 종료 인덱스를 의미하며, N//3은 제외하고 몇 번 동작했는지 구해야함
     result = (result-N//3)//2 + 1
     return result
