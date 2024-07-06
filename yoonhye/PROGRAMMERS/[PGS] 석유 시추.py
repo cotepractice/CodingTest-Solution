@@ -1,15 +1,14 @@
 from collections import deque
 
+
 def bfs(arr, i, j, num):
     d = [(0, 1), (0, -1), (1, 0), (-1, 0)]
     m, n = len(arr[0]), len(arr)  # 열, 행
     queue = deque([(i, j)])
+    arr[i][j] = num
     count = 0
     while (queue):
         x, y = queue.popleft()
-        if arr[x][y] > 1:
-            continue
-        arr[x][y] = num
         count += 1
         for dx, dy in d:
             nx, ny = x + dx, y + dy
@@ -17,6 +16,7 @@ def bfs(arr, i, j, num):
                 continue
             if arr[nx][ny] == 1:
                 queue.append((nx, ny))
+                arr[nx][ny] = num
 
     return count
 
