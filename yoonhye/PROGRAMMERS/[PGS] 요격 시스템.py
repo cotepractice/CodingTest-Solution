@@ -1,15 +1,11 @@
 def solution(targets):
-    answer = 1
-    targets.sort()
-    start, end = targets[0]
+    targets.sort(key=lambda x:x[1])
+    answer = 0
+    end = -1
 
-    for s, e in targets[1:]:
-        if s < end <= e:
-            continue
-        elif start < s and e < end:
-            start, end = s, e
-        else:
-            start, end = s, e
+    for s, e in targets:
+        if s >= end:
             answer += 1
+            end = e
 
     return answer
