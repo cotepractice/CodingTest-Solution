@@ -44,3 +44,32 @@ def solution(r1, r2):
     answer += sum*4
 
     return answer
+
+#3. 100/100. math 임포트해 사용
+
+import math
+def solution(r1, r2):
+    
+    answer,sum = 0,0
+    
+    #x좌표 또는 y좌표가 0인 경우
+    sum += r2-r1+1
+    
+    #원 내에 존재
+    for x in range(1,r2):
+        h2 = math.sqrt(r2**2 - x**2)
+        
+        if x<r1:
+            h1 = math.sqrt(r1**2 - x**2)
+            sum += int(h2)-int(h1)
+            
+            #반지름으로 r1을 가지는 원이 x가 정수일 때 정수를 지나는 경우, answer에 해당
+            if float(h1)==float(int(h1)) and h1>0.0:
+                sum += 1
+
+        else:
+            sum += int(h2)
+    
+    answer += sum*4
+
+    return answer
