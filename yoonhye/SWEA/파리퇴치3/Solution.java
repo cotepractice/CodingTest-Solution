@@ -28,6 +28,7 @@ public class Solution {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
+        System.out.println(T);
         for (int t = 1; t<=T; t++){
 
             StringTokenizer st = new StringTokenizer(br.readLine());
