@@ -8,8 +8,6 @@ dy = [-1,1,0,0]
 def solve(start,end,board):
     global dp
     sx,sy = start[0],start[1]
-    ex,ey = end[0],end[1]
-    cnt = 0
     Q = deque()
     Q.append([sx,sy])
 
