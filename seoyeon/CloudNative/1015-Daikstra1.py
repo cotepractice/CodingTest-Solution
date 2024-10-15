@@ -98,4 +98,48 @@ for i in range(N):
 
 print(result)
 
-# 3. 
+# 3. 성공
+import sys
+import heapq
+ 
+input = sys.stdin.readline
+INF = int(1e9)
+
+n, m = map(int, input().split())
+start = int(input())
+graph = [[] for _ in range(n + 1)] # index와 숫자를 맞춤. index 0은 힝상 []
+distance = [INF] * (n + 1)
+ 
+for i in range(m):
+	a, b, c = map(int, input().split())
+	graph[a].append((b, c))
+
+print("graph:",graph)
+
+def dijkstra(start):
+	q = []
+	heapq.heappush(q, (0, start)) # q에 (도착지점,이동비용) 넣음
+	distance[start] = 0
+	while q:
+		dist, now = heapq.heappop(q)
+		if distance[now]<dist:	# 이전에 진행했을 때가 더 작으면 아래 코드 진행 X
+			continue
+
+		for b, c in graph[now]:
+			cost = dist + c
+			if cost < distance[b]: # 이전의 이동 비용보다 b를 거쳐가는 비용이 더 작은 경우 값 변경 
+				distance[b] = cost
+				heapq.heappush(q, (cost, b)) # q에 변경된 값을 다시 넣음
+
+
+dijkstra(start)
+
+result = 0
+
+for i in range(1, n + 1):
+	if distance[i] == INF:
+		result -= 1
+	else:
+		result += distance[i]
+
+print(result)
