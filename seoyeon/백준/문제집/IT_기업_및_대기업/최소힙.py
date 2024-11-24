@@ -20,4 +20,3 @@ for i in range(N):
             print(0)
         else:
             print(heapq.heappop(heap))
-
