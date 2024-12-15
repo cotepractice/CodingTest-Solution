@@ -10,11 +10,8 @@ def backtracking(n, ans):
     
     for i in range(n,N+1):
         ans.append(i)
-        #print("1",ans)
         backtracking(i+1,ans)
         ans.pop()
-        #print("2",ans)
-
 
 ans = []
 backtracking(1, ans)
