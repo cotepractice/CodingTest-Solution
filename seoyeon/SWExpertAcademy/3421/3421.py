@@ -1,11 +1,7 @@
 T = int(input())  # 테스트케이스 개수 입력
 
 def count_burger(idx, selected):
-    """
-    가능한 버거 조합의 개수를 계산하는 백트래킹 함수.
-    idx: 현재 재료의 인덱스
-    selected: 현재까지 선택된 재료
-    """
+
     global not_m, ans
 
     # 모든 재료를 확인한 경우
