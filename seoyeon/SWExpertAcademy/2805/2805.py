@@ -1,3 +1,4 @@
+#SWEA #2805 농작물 수확하기
 T = int(input())
 
 for t in range(1,T+1):
@@ -8,14 +9,12 @@ for t in range(1,T+1):
 
     for n in range(N):
         maps[n] = list(map(int,input()))
-    #print("maps:",maps)
 
     answer = 0
     cnt = 0
     for i in range(N):
         for j in range(N):
             if N//2-cnt<=j<=N//2+cnt:
-                #print("i,j",i,j)
                 answer += maps[i][j]
         if i<N//2:
             cnt += 1
