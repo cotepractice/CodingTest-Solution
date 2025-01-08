@@ -23,9 +23,10 @@ def up(x,y):
 def down(x,y):
     return x+1,y
 
-def move(x,y,depth): #depth는 1부터 min(N,M)//2까지 동작, N과 M은 1부터 시작. x와 y는 1부터 시작
+def move(x,y): #depth는 1부터 min(N,M)//2까지 동작, N과 M은 1부터 시작. x와 y는 1부터 시작
 
-    for d in range(1,depth+1):
+        d = min(x,y,N-x+1,M-y+1)
+
         #up
         if d+1<=x<=N-d+1 and y == M-d+1:
             #print("1",up(x,y))
@@ -46,6 +47,7 @@ def move(x,y,depth): #depth는 1부터 min(N,M)//2까지 동작, N과 M은 1부�
             return left(x,y)
 
 
+
 move_maps = [[0 for _ in range(M+1)] for _ in range(N+1)]
 
 for i in range(1,N+1):
@@ -53,9 +55,9 @@ for i in range(1,N+1):
         cur_val = maps[i][j]
         cur_x,cur_y = i,j
         #print("cur",cur_x,cur_y)
-        rotate_N = min(N,M)//2 #문제에 작은게 짝수라고 명시되어 있음
+        #rotate_N = min(N,M)//2 #문제에 작은게 짝수라고 명시되어 있음
         for r in range(R):
-            mv_x, mv_y = move(cur_x,cur_y,rotate_N)
+            mv_x, mv_y = move(cur_x,cur_y)
             cur_x,cur_y = mv_x,mv_y
         #print("mv",mv_x,mv_y)
         move_maps[mv_x][mv_y] = cur_val
