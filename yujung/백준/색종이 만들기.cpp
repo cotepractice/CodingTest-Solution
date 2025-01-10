@@ -22,7 +22,8 @@ void solved(int x, int y, int size) {
 				solved(x, y + size / 2, size / 2);
 				solved(x + size / 2, y, size / 2);
 				solved(x + size / 2, y + size / 2, size / 2);
-			}
+				return;
+}
 		}
 	}
 	if (check == 0) {
