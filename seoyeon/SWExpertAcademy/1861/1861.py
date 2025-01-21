@@ -1,7 +1,7 @@
 #SWExpert Academy
 from collections import deque
 
-def dfs(start_x,start_y):
+def solv(start_x,start_y):
     global N, matrix
 
     cnt = 0
@@ -34,7 +34,7 @@ for t in range(1,T+1):
 
     for i in range(N):
         for j in range(N):
-            cnt = dfs(i,j)
+            cnt = solv(i,j)
             if cnt==answer[1]:
                 answer[0] = min(matrix[i][j], answer[0])
             elif cnt>answer[1]:
