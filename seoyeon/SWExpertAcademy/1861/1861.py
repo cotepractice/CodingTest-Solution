@@ -1,24 +1,23 @@
 #SWExpert Academy
+from collections import deque
 
-def dfs(x,y,start,n):
-    global rooms_n,max_n,N,matrix
+def dfs(start_x,start_y):
+    global N, matrix
 
-    if n>=max_n:
-        rooms_n=min(rooms_n,start)
-        max_n=n
-        
-    m_lst = [[1,0],[-1,0],[0,1],[0,-1]]
-    for dx,dy in m_lst:
-        nx = x+dx
-        ny = y+dy
-        if 0<=nx<N and 0<=ny<N:
-            if matrix[nx][ny]==matrix[x][y]+1 and visited[nx][ny]==False:
-                visited[nx][ny]=True
-                dfs(nx,ny,start,n+1)
-                visited[nx][ny]=False
-
-
-
+    cnt = 0
+    Q = deque()
+    Q.append((start_x,start_y))
+    while Q:
+        x,y = Q.popleft()
+        cnt += 1
+        d_lst = [[1,0],[-1,0],[0,1],[0,-1]]
+        for dx,dy in d_lst:
+            nx = x+dx
+            ny = y+dy
+            if 0<=nx<N and 0<=ny<N:
+                if matrix[nx][ny] == matrix[x][y]+1:
+                    Q.append((nx,ny))
+    return cnt
 
 T = int(input())
 
@@ -31,15 +30,16 @@ for t in range(1,T+1):
         matrix_lst = list(map(int,input().split()))
         matrix[i] = matrix_lst
     
-    rooms_n=float("inf") #출발하는방번호
-    max_n=0 #이동가능한방개수
+    answer = [float("inf"), 0] #출발하는 방 번호, 이동 가능한 방의 개수
 
-    visited=[[False for _ in range(N)] for _ in range(N)]
     for i in range(N):
         for j in range(N):
-            visited[i][j]=True
-            dfs(i,j,matrix[i][j],1)
-            visited[i][j]=False
-
+            cnt = dfs(i,j)
+            if cnt==answer[1]:
+                answer[0] = min(matrix[i][j], answer[0])
+            elif cnt>answer[1]:
+                answer[0] = matrix[i][j]
+                answer[1]=cnt
+            
     print("#",t,sep="",end=" ")
-    print(rooms_n,max_n)
+    print(answer[0],answer[1]) 
