@@ -2,66 +2,34 @@
 #BFS
 
 #0을 -1로 만드는 bfs 함수
-def first_func(t):
+def func():
 
     global matrix,N,M
     
-    Q = deque()
+    Q = deque() #탐색할 수 있는 곳,matrix[x][y]=0
+    melt = deque() #녹는 곳,matrix[x][y]=1
+    visited = [[False for _ in range(M)] for _ in range(N)]
 
-    #겉에 있는 0을 모두 -1로 변경
-    if t==0:
-        for j in range(M):
-            if matrix[0][j]==0:
-                matrix[0][j] = -1
-                Q.append([0,j])
-            elif matrix[N-1][j]==0:
-                matrix[N-1][j] = -1
-                Q.append([N-1,j])
-        
-        for i in range(N):
-            if matrix[i][0]==0:
-                matrix[i][0] = -1
-                Q.append([i,0])
-            elif matrix[i][M-1]==0:
-                matrix[i][M-1] = -1
-                Q.append([i,M-1])
-    else:
-        for i in range(N):
-            for j in range(M):
-                if matrix[i][j]==0:
-                    matrix[i][j] = -1
-                    Q.append([i,j])
-
-    #nx,ny로 상하좌우에 -1과 닿아있는 0이 있으면 모두 -1로 변경
+    Q.append([0,0])
     d_lst = [[0,1],[0,-1],[1,0],[-1,0]]
     while Q:
         x,y = Q.popleft()
         for dx,dy in d_lst:
             nx = x+dx
             ny = y+dy
-            if 0<=nx<N and 0<=ny<M and matrix[nx][ny]==0:
-                matrix[nx][ny] = -1
-                Q.append([nx,ny])
-
-#1을 0으로 만드는 bfs 함수
-def second_func():
-
-    Q = deque()
+            if 0<=nx<N and 0<=ny<M and visited[nx][ny]==False:
+                visited[nx][ny]=True
+                if matrix[nx][ny]==0:
+                    Q.append([nx,ny])
+                elif matrix[nx][ny]==1:
+                    melt.append([nx,ny])
     cnt = 0
+    while melt:
+        x,y = melt.popleft()
+        matrix[x][y] = 0
+        cnt += 1
 
-    d_lst = [[0,1],[0,-1],[1,0],[-1,0]]
-    for i in range(N):
-        for j in range(M):
-            if matrix[i][j]==-1:
-                for dx,dy in d_lst:
-                    nx = i+dx
-                    ny = j+dy
-                    if 0<=nx<N and 0<=ny<M and matrix[nx][ny]==1:
-                        matrix[nx][ny]=0
-                        cnt += 1
     return cnt
-
-
 
 from collections import deque
 
@@ -76,10 +44,8 @@ for i in range(N):
 
 #처음
 while True:
-    first_func(ans[0])
-    #print("1",matrix)
-    cheese = second_func()
-    #print("2",cheese)
+    cheese = func()
+    
     if cheese>0:
         ans[0] += 1
         ans[1] = cheese
