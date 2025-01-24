@@ -4,8 +4,6 @@
 def dfs(index,last_x,last_y,d):
     global ans
 
-    d_lst = [[-1,0],[1,0],[0,-1],[0,1]]
-
     #모든 경로 탐색 완료
     if d>=ans:
         return
