@@ -9,7 +9,6 @@ def solv(x,y,z,d):
 
     solv_ans = 0
     N_pos = [[N,x],[N,y],[N,z]]
-    N_min = [[float("inf"),-1,-1],[float("inf"),-1,-1],[float("inf"),-1,-1]]
 
     Q_lst = [] #적의 좌표 
 
@@ -21,6 +20,8 @@ def solv(x,y,z,d):
     Q = deque(Q_lst) #적의 좌표
     
     while True:
+        N_min = [[float("inf"),-1,-1],[float("inf"),-1,-1],[float("inf"),-1,-1]]
+        
         #1.궁수와 가장 가까운 좌표 탐색:N_min [가장가까운거리,적의x좌표,적의y좌표]
         while Q:
             x,y = Q.popleft()
@@ -32,7 +33,7 @@ def solv(x,y,z,d):
                 elif m<=d and m==N_min[k][0]:
                     if y<N_min[k][2]:
                         N_min[k] = [m,x,y]
-        
+        #print("N_min:",N_min)
         #2.적 공격   
         for k in range(3):
             min_d,min_x,min_y = N_min[k]
@@ -47,9 +48,13 @@ def solv(x,y,z,d):
                 Q_lst.remove([min_x,min_y]) #공격받은 적 제거
         
         #3. 남은 적 위치 업데이트: Q에 남은 적 위치 추가 및 maps 업데이트  
+        #for i 에서 i가 큰 순서대로 진행해야 함 ->
         Q = deque()
   
         tmp_lst = []
+        #print("Q_lst1:",Q_lst)
+        Q_lst.sort(key=lambda x : x[0],reverse=True)
+        #print("Q_lst2:",Q_lst)
         for k in range(len(Q_lst)):
             x,y = Q_lst[k]
 
@@ -61,10 +66,15 @@ def solv(x,y,z,d):
             else:
                 maps[x][y]=0
         
+        #print("tmp_lst:",tmp_lst)
         #남은 적이 없는 경우 종료
         if len(tmp_lst)==0:
             return solv_ans
         
+        #print("MAPS")
+        # for i in range(N):
+        #     print(maps[i])
+
         Q = deque(tmp_lst)
         Q_lst = tmp_lst
 
@@ -87,7 +97,7 @@ ans = 0
 #2. 조합
 for c in combi:
     x,y,z = c
-    
+    #print("c",c)
     a = solv(x,y,z,D)
     if a>ans:
         ans = a
