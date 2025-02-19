@@ -1,5 +1,5 @@
 #백준 #1753 최단경로
-#MST - Kruskal's Algorithm
+#DP
 
 import heapq
 import sys
