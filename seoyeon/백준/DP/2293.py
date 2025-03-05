@@ -11,11 +11,9 @@ for n in range(N):
 
 dp[0]=1 
 
-coins.sort()
-
 for coin in coins:
     for i in range(coin,K+1):
-        #coin 크기만큼 이전의 dp와 동일
-        dp[i] += dp[i-coin]
+        if i-coin>=0: #coin 크기만큼 이전의 dp와 동일
+            dp[i] += dp[i-coin]
 
-print(K)
+print(dp[K])
