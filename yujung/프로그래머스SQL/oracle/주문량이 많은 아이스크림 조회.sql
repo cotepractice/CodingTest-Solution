@@ -1,0 +1,14 @@
+SELECT FLAVOR
+FROM (
+    SELECT FLAVOR
+    FROM (
+        SELECT *
+        FROM FIRST_HALF 
+            UNION ALL
+        SELECT *
+        FROM JULY
+    )
+    GROUP BY FLAVOR
+    ORDER BY sum(TOTAL_ORDER) DESC
+)
+WHERE ROWNUM <= 3
