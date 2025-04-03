@@ -1,6 +1,5 @@
 #백준 #13549 숨바꼭질3
 #Dijkstra
-#17:05-
 
 from collections import deque
 
