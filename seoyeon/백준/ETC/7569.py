@@ -44,7 +44,6 @@ while True:
         answer = 0
         break
     if count==0:
-
         break
     cnt = len(lst)
     Q = deque(lst)
