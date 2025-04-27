@@ -12,7 +12,7 @@ while True:
         break
     if T[-1]=="A":
         T = T[:-1]
-    if T[-1]=="B":
+    elif T[-1]=="B":
         T = T[:-1]
         T = T[::-1]
 
