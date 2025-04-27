@@ -1,21 +1,19 @@
 #백준 #12904 A와B
 
-S = list(input())
-T = list(input())
+S = input()
+T = input()
 
 #T->S
 answer = 0
-def dfs(str):
-    global answer
-    if len(str)==len(S):
-        if str==S:
+while True:
+    if len(T)<=len(S):
+        if T==S:
             answer=1
-        return
-    if str[-1]=="B":
-        dfs(str[:-1][::-1])
-    if str[-1]=="A":
-        dfs(str[:-1])
-    return
+        break
+    if T[-1]=="A":
+        T = T[:-1]
+    if T[-1]=="B":
+        T = T[:-1]
+        T = T[::-1]
 
-dfs(T)
 print(answer)
